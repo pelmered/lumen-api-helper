@@ -11,13 +11,13 @@ use Illuminate\Validation\Validator;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Gate;
 
-use pelmered\APIHelper\Controllers\ControllerResponses;
-use pelmered\APIHelper\Controllers\ControllerActions;
+use pelmered\APIHelper\Traits\ControllerResponses;
+use pelmered\APIHelper\Traits\ControllerActions;
 
 
 abstract class ApiController extends BaseController
 {
-    use ApiControllerResponsesTrait, ApiControllerActionsTrait;
+    use ControllerResponses, ControllerActions;
 
     //const RESOURCE_MODEL = '';
     //const RESOURCE_NAME = '';

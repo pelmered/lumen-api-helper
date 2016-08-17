@@ -1,10 +1,10 @@
 <?php
 
-namespace pelmered\APIHelper\Controllers;
+namespace pelmered\APIHelper\Traits;
 
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 
-trait ApiControllerResponsesTrait
+trait ControllerResponses
 {
     protected $statusCode = 200;
     protected $errorCode = '';

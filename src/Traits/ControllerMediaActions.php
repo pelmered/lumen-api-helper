@@ -1,6 +1,6 @@
 <?php
 
-namespace pelmered\APIHelper\Controllers;
+namespace pelmered\APIHelper\Traits;
 
 use pelmered\APIHelper\ApiSerializer;
 
@@ -12,7 +12,7 @@ use League\Fractal\Manager;
 use League\Fractal\Resource\Collection;
 use League\Fractal\Resource\Item;
 
-trait ApiControllerActionsTrait
+trait ControllerMediaActions
 {
     protected $resource = null;
 
