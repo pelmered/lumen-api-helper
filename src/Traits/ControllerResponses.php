@@ -1,6 +1,6 @@
 <?php
 
-namespace pelmered\RestTraits\Controllers;
+namespace pelmered\APIHelper\Controllers;
 
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 

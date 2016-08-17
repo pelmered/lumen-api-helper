@@ -1,6 +1,6 @@
 <?php
 
-namespace pelmered\RestTraits;
+namespace pelmered\APIHelper;
 
 use League\Fractal\Serializer\ArraySerializer;
 

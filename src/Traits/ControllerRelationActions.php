@@ -1,8 +1,8 @@
 <?php
 
-namespace pelmered\RestTraits\Controllers;
+namespace pelmered\APIHelper\Controllers;
 
-use pelmered\RestTraits\ApiSerializer;
+use pelmered\APIHelper\ApiSerializer;
 
 use Illuminate\Support\Facades\Auth;
 use App\Http\Requests;

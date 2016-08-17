@@ -16,7 +16,7 @@
     "issues": "https://github.com/pelmered/lumen-api-helper/issues"
   },
   "autoload": {
-    "psr-4": {"pelmered\\RestTraits\\": "src/"}
+    "psr-4": {"pelmered\\APIHelper\\": "src/"}
   },
   "require"    : {
     "composer/installers": "~1.0",

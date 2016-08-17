@@ -1,6 +1,6 @@
 <?php
 
-namespace pelmered\RestTraits\Controllers;
+namespace pelmered\APIHelper\Controllers;
 
 use Laravel\Lumen\Routing\Controller as BaseController;
 use Illuminate\Http\Request;
@@ -11,8 +11,8 @@ use Illuminate\Validation\Validator;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Gate;
 
-use pelmered\RestTraits\Controllers\ControllerResponses;
-use pelmered\RestTraits\Controllers\ControllerActions;
+use pelmered\APIHelper\Controllers\ControllerResponses;
+use pelmered\APIHelper\Controllers\ControllerActions;
 
 
 abstract class ApiController extends BaseController

@@ -1,8 +1,8 @@
 <?php
 
-namespace pelmered\RestTraits\Controllers;
+namespace pelmered\APIHelper\Controllers;
 
-use pelmered\RestTraits\ApiSerializer;
+use pelmered\APIHelper\ApiSerializer;
 
 use Illuminate\Support\Facades\Auth;
 use App\Http\Requests;
@@ -173,7 +173,7 @@ trait ApiControllerActionsTrait
     }
     private function saveMedia($mediaData)
     {
-        $media = new \pelmered\RestTraits\Models\Media($mediaData);
+        $media = new \pelmered\APIHelper\Models\Media($mediaData);
 
         $media->save();
 

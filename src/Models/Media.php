@@ -1,6 +1,6 @@
 <?php
 
-namespace pelmered\RestTraits\Models;
+namespace pelmered\APIHelper\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
