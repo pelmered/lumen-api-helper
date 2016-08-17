@@ -1,0 +1,26 @@
+{
+  "name"       : "pelmered/lumen-api-helper",
+  "description": "",
+  "homepage"   : "https://github.com/pelmered/lumen-api-helper",
+  "keywords"    : [""],
+  "type"       : "library",
+  "license"    : "MIT",
+  "authors"     : [
+    {
+      "name"    : "Peter Elmered",
+      "email"   : "peter@elmered.com",
+      "homepage": "http://www.elmered.com"
+    }
+  ],
+  "support"     : {
+    "issues": "https://github.com/pelmered/lumen-api-helper/issues"
+  },
+  "autoload": {
+    "psr-4": {"pelmered\\RestTraits\\": "src/"}
+  },
+  "require"    : {
+    "composer/installers": "~1.0",
+    "league/fractal": "^0.13",
+    "intervention/image": "^2.3"
+  }
+}
