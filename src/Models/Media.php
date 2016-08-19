@@ -95,16 +95,16 @@ class Media extends Model
 
     public function getUniqueFileName()
     {
-        $i = 1;
+        $iterator = 1;
 
-        $imageName = $this->id.'_'.$i.'.jpg';
+        $imageName = $this->id.'_'.$iterator.'.jpg';
 
         while( file_exists($this->imageFilePath.'/'.$imageName) )
         {
-            $imageName = $this->id.'_'.++$i.'.jpg';
+            $imageName = $this->id.'_'.++$iterator.'.jpg';
         }
 
-        return $this->id.'_'.++$i;
+        return $this->id.'_'.++$iterator;
     }
 
     public function getFileUrl( $type = null )

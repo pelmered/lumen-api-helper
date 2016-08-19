@@ -39,21 +39,23 @@ trait ControllerActions
     {
         $fractal = new Manager();
 
-        $m = static::RESOURCE_MODEL;
+        $model = static::RESOURCE_MODEL;
 
-        if (Gate::denies('read', $m ) ) {
+        if (Gate::denies('read', $model ) ) {
             return $this->permissionDeniedResponse();
         }
 
-        if (isset($_GET['include'])) {
-            $fractal->parseIncludes($_GET['include']);
+        $include = filter_input(INPUT_GET, 'include', FILTER_SANITIZE_STRING);
+
+        if (isset($include)) {
+            $fractal->parseIncludes($include);
         }
 
         $fractal->setSerializer(new ApiSerializer());
 
         $limit = $this->getQueryLimit();
 
-        $Resources = $m::orderBy('created_at', 'desc')->paginate($limit);
+        $Resources = $model::orderBy('created_at', 'desc')->paginate($limit);
 
         $collection = new Collection($Resources, $transformer);
 
@@ -75,13 +77,13 @@ trait ControllerActions
     {
         $fractal = new Manager();
 
-        $m = static::RESOURCE_MODEL;
+        $model = static::RESOURCE_MODEL;
 
-        if (Gate::denies('read', $m ) ) {
+        if (Gate::denies('read', $model ) ) {
             return $this->permissionDeniedResponse();
         }
 
-        $resource = $m::find($resourceId);
+        $resource = $model::find($resourceId);
 
         if(!$resource) {
             return $this->notFoundResponse();
@@ -99,16 +101,16 @@ trait ControllerActions
         return $this->response($data);
     }
 
-    public function storeResource( $m = null )
+    public function storeResource($model = null)
     {
-        if(!$m)
+        if(!$model)
         {
-            $m = static::RESOURCE_MODEL;
+            $model = static::RESOURCE_MODEL;
         }
 
-        $this->validateAction($m, 'store');
+        $this->validateAction($model, 'store');
 
-        $resourceData = $this->createResource( $m );
+        $resourceData = $this->createResource( $model );
 
         return $this->setStatusCode(200)->createdResponse([
             'meta' => [
@@ -118,7 +120,7 @@ trait ControllerActions
         ]);
     }
 
-    protected function createResource( $m, $merge = [] )
+    protected function createResource($model, $merge = [])
     {
         $request = app('request');
         $data = $request->all();
@@ -132,7 +134,7 @@ trait ControllerActions
 
         $data = $data + $merge;
 
-        $resourceObject = $m::create($data);
+        $resourceObject = $model::create($data);
 
         $this->resource = $resourceObject;
 
@@ -140,7 +142,7 @@ trait ControllerActions
 
         if(isset($data['media']) && method_exists($this, 'processMedia'))
         {
-            $media = $this->processMedia(isset($merge['post_id']) ? $merge['post_id'] : $resourceObject->id, $m);
+            $media = $this->processMedia(isset($merge['post_id']) ? $merge['post_id'] : $resourceObject->id, $model);
 
             if($media)
             {
@@ -188,9 +190,9 @@ trait ControllerActions
     public function updateResource($id)
     {
         $request = app('request');
-        $m = static::RESOURCE_MODEL;
+        $model = static::RESOURCE_MODEL;
 
-        if(!$resourceObject = $m::find($id))
+        if(!$resourceObject = $model::find($id))
         {
             return $this->notFoundResponse();
         }
@@ -201,14 +203,14 @@ trait ControllerActions
 
         try
         {
-            $v = \Validator::make($request->all(), $this->getValidationRules('update'));
-            if($v->fails())
+            $validator = \Validator::make($request->all(), $this->getValidationRules('update'));
+            if($validator->fails())
             {
                 throw new \Exception("ValidationException");
             }
         }catch(\Exception $ex)
         {
-            $resourceObject = ['form_validations' => $v->errors(), 'exception' => $ex->getMessage()];
+            $resourceObject = ['form_validations' => $validator->errors(), 'exception' => $ex->getMessage()];
             return $this->validationErrorResponse('Validation error', $resourceObject);
         }
 
@@ -224,10 +226,10 @@ trait ControllerActions
         ]);
     }
 
-    public function destroyResource($id)
+    public function destroyResource($resourceId)
     {
-        $m = static::RESOURCE_MODEL;
-        if(!$resourceObject = $m::find($id))
+        $model = static::RESOURCE_MODEL;
+        if(!$resourceObject = $model::find($resourceId))
         {
             return $this->notFoundResponse();
         }
@@ -261,15 +263,15 @@ trait ControllerActions
 
         try
         {
-            $v = \Validator::make($request->all(), $this->getValidationRules($action));
-            if($v->fails())
+            $validator = \Validator::make($request->all(), $this->getValidationRules($action));
+            if($validator->fails())
             {
                 throw new \Exception("ValidationException");
             }
 
         }catch(\Exception $ex)
         {
-            $resourceObject = ['form_validations' => $v->errors(), 'exception' => $ex->getMessage()];
+            $resourceObject = ['form_validations' => $validator->errors(), 'exception' => $ex->getMessage()];
             return $this->validationErrorResponse('Validation error', $resourceObject);
         }
     }

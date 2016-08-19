@@ -56,13 +56,13 @@ abstract class ApiController extends BaseController
 
     public function getResource( $resourceId, $checkPermissions = true, $notFoundResponse = true )
     {
-        $m = static::RESOURCE_MODEL;
+        $model = static::RESOURCE_MODEL;
 
-        if ($checkPermissions && Gate::denies('read', $m ) ) {
+        if ($checkPermissions && Gate::denies('read', $model ) ) {
             return $this->permissionDeniedResponse();
         }
 
-        $resource = $m::find($resourceId);
+        $resource = $model::find($resourceId);
 
         if($notFoundResponse && !$resource) {
             return $this->notFoundResponse();

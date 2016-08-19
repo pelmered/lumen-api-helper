@@ -118,18 +118,18 @@ trait ControllerResponses
             ->setErrorDetails($errorDetails)
             ->errorResponse( $message );
     }
-    function debugErrorResponse( $e )
+    function debugErrorResponse($exception)
     {
         $data = [
             'status'    => 'error',
             'errors'     => [
                 'code'          => 'INTERNAL_ERROR',
                 'status'        => $this->getStatusCode(),
-                'error_message' => $e->getMessage(),
-                'file'          => $e->getFile(),
-                'line'          => $e->getLine(),
-                'exception'     => get_class($e),
-                'trace'         => $e->getTrace()
+                'error_message' => $exception->getMessage(),
+                'file'          => $exception->getFile(),
+                'line'          => $exception->getLine(),
+                'exception'     => get_class($exception),
+                'trace'         => $exception->getTrace()
             ]
         ];
 

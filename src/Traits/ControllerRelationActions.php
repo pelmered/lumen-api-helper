@@ -20,9 +20,9 @@ trait ControllerActions
     {
         $fractal = new Manager();
 
-        $m = static::RESOURCE_MODEL;
+        $model = static::RESOURCE_MODEL;
 
-        $resource = $m::find($resourceId);
+        $resource = $model::find($resourceId);
 
         if(!$resource)
         {
@@ -62,9 +62,9 @@ trait ControllerActions
     {
         $fractal = new Manager();
 
-        $m = static::RESOURCE_MODEL;
+        $model = static::RESOURCE_MODEL;
 
-        $resource = $m::find($resourceId);
+        $resource = $model::find($resourceId);
 
         if(!$resource)
         {
@@ -103,21 +103,21 @@ trait ControllerActions
         return $this->paginatedResponse($resourceRelation,$data);
     }
 
-    public function storeRelationResource($resourceId, $relation, $m = null )
+    public function storeRelationResource($resourceId, $relation, $model = null )
     {
-        if(!$m)
+        if(!$model)
         {
-            $m = static::RESOURCE_MODEL;
+            $model = static::RESOURCE_MODEL;
         }
 
-        $resource = $m::find($resourceId);
+        $resource = $model::find($resourceId);
 
         if( !$resource )
         {
             return $this->notFoundResponse();
         }
 
-        $this->validateAction($resource, 'store');
+        $this->validateAction($resource, 'store_'.$relation);
 
         $resourceData = $this->createResource( $relation, ['post_id' => $resourceId] );
 
@@ -134,19 +134,19 @@ trait ControllerActions
         ]);
     }
 
-    public function updateRelationResource($resourceId, $relation, $relationId, $m = null )
+    public function updateRelationResource($resourceId, $relation, $relationId, $model = null )
     {
         $request = app('request');
-        $m = static::RESOURCE_MODEL;
+        $model = static::RESOURCE_MODEL;
 
-        $resource = $m::find($resourceId);
+        $resource = $model::find($resourceId);
 
-        if(!$resource = $m::find($id))
+        if(!$resourceObject = $model::find($resourceId))
         {
             return $this->notFoundResponse();
         }
 
-        $this->validateAction($resource, 'store');
+        $this->validateAction($resource, 'update_'.$relation);
 
         /*
         try
@@ -163,8 +163,10 @@ trait ControllerActions
         }
         */
 
-        $resourceObject->fill($request->all());
-        $resourceObject->save();
+        $relationObject = $resourceObject->$relation()->where('id', $relationId)->get();
+
+        $relationObject->fill($request->all());
+        $relationObject->save();
 
         return $this->setStatusCode(200)->response([
             'meta' => [
