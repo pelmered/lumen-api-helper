@@ -91,9 +91,12 @@ trait ControllerActions
 
         $fractal->setSerializer(new ApiSerializer());
 
-        if (isset($_GET['include'])) {
-            $fractal->parseIncludes($_GET['include']);
+        $include = filter_input(INPUT_GET, 'include', FILTER_SANITIZE_STRING);
+
+        if (isset($include)) {
+            $fractal->parseIncludes($include);
         }
+
         $item = new Item($resource, $Transformer);
 
         $data = $fractal->createData($item)->toArray();
@@ -187,12 +190,12 @@ trait ControllerActions
         return $mediaData;
     }
 
-    public function updateResource($id)
+    public function updateResource($resourceId)
     {
         $request = app('request');
         $model = static::RESOURCE_MODEL;
 
-        if(!$resourceObject = $model::find($id))
+        if(!$resourceObject = $model::find($resourceId))
         {
             return $this->notFoundResponse();
         }

@@ -33,8 +33,10 @@ trait ControllerActions
             return $this->permissionDeniedResponse();
         }
 
-        if (isset($_GET['include'])) {
-            $fractal->parseIncludes($_GET['include']);
+        $include = filter_input(INPUT_GET, 'include', FILTER_SANITIZE_STRING);
+
+        if (isset($include)) {
+            $fractal->parseIncludes($include);
         }
 
         $fractal->setSerializer(new ApiSerializer());
@@ -75,8 +77,10 @@ trait ControllerActions
             return $this->permissionDeniedResponse();
         }
 
-        if (isset($_GET['include'])) {
-            $fractal->parseIncludes($_GET['include']);
+        $include = filter_input(INPUT_GET, 'include', FILTER_SANITIZE_STRING);
+
+        if (isset($include)) {
+            $fractal->parseIncludes($include);
         }
 
         /*
