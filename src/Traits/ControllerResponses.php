@@ -85,7 +85,7 @@ trait ControllerResponses
     protected function validationErrorResponse(
         $message = 'Validation error',
         //$errorDetails = 'Current user does not have permission to access or modify this resource',
-        $data = [];
+        $data = []
     )
     {
         return $this->setStatusCode(401)
