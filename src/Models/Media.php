@@ -34,10 +34,9 @@ class Media extends Model
     protected $imageFilePath;
 
 
-    function __construct(array $attributes = [])
+    public function __construct(array $attributes = [])
     {
         parent::__construct($attributes);
-
 
         $this->imageFilePath = app()->basePath('public/media');
     }
@@ -46,15 +45,14 @@ class Media extends Model
     {
         return $this->belongsTo('App\User', 'user_id');
     }
+
     public function resource()
     {
         return $this->morphTo();
     }
 
-    public function setBase64( $base64 )
+    public function setBase64($base64)
     {
-
-
         //$manager = new ImageManager(array('driver' => 'imagick'));
         $manager = new ImageManager();
 
@@ -66,7 +64,7 @@ class Media extends Model
         return $this;
     }
 
-    public function generateImageSizes( )
+    public function generateImageSizes()
     {
         $imageSizes = config('media.sizes');
 
@@ -76,12 +74,11 @@ class Media extends Model
 
         $image->backup();
 
-        foreach($imageSizes AS $imageSize )
-        {
-            $image->fit($imageSize['size'][0],$imageSize['size'][1]);
+        foreach ($imageSizes as $imageSize) {
+            $image->fit($imageSize['size'][0], $imageSize['size'][1]);
             $image->sharpen($imageSize['sharpen']);
 
-            $image->save( $this->imageFilePath.'/'.$fileName.$imageSize['suffix'].'.jpg' );
+            $image->save($this->imageFilePath.'/'.$fileName.$imageSize['suffix'].'.jpg');
 
             $image->reset();
         }
@@ -99,24 +96,21 @@ class Media extends Model
 
         $imageName = $this->id.'_'.$iterator.'.jpg';
 
-        while( file_exists($this->imageFilePath.'/'.$imageName) )
-        {
+        while (file_exists($this->imageFilePath.'/'.$imageName)) {
             $imageName = $this->id.'_'.++$iterator.'.jpg';
         }
 
         return $this->id.'_'.++$iterator;
     }
 
-    public function getFileUrl( $type = null )
+    public function getFileUrl($type = null)
     {
         $imageSizes = config('media.sizes');
 
-        if( !$type )
-        {
+        if (!$type) {
             $files = [];
 
-            foreach( $imageSizes AS $imageSizeName => $imageSize )
-            {
+            foreach ($imageSizes as $imageSizeName => $imageSize) {
                 $files[$imageSizeName] = url('media/'.$this->file.$imageSize['suffix'].'.jpg');
             }
 
@@ -124,7 +118,5 @@ class Media extends Model
         }
 
         //TODO: return specific image size
-
     }
-
 }

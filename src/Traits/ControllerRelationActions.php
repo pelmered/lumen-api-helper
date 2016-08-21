@@ -16,7 +16,7 @@ trait ControllerActions
 {
     protected $resource = null;
 
-    public function getSignleRelation( $transformer, $resourceId, $relation, $relationId )
+    public function getSignleRelation($transformer, $resourceId, $relation, $relationId)
     {
         $fractal = new Manager();
 
@@ -24,12 +24,11 @@ trait ControllerActions
 
         $resource = $model::find($resourceId);
 
-        if(!$resource)
-        {
+        if (!$resource) {
             return $this->notFoundResponse();
         }
 
-        if (Gate::denies('read_'.$relation, $resource ) ) {
+        if (Gate::denies('read_'.$relation, $resource)) {
             return $this->permissionDeniedResponse();
         }
 
@@ -43,8 +42,7 @@ trait ControllerActions
 
         $resourceRelation = $resource->$relation()->find($relationId);
 
-        if(!$resourceRelation)
-        {
+        if (!$resourceRelation) {
             return $this->notFoundResponse();
         }
 
@@ -68,12 +66,11 @@ trait ControllerActions
 
         $resource = $model::find($resourceId);
 
-        if(!$resource)
-        {
+        if (!$resource) {
             return $this->notFoundResponse();
         }
 
-        if (Gate::denies('read_'.$relation, $resource ) ) {
+        if (Gate::denies('read_'.$relation, $resource)) {
             return $this->permissionDeniedResponse();
         }
 
@@ -100,53 +97,48 @@ trait ControllerActions
         $collection = new Collection($resourceRelation, $transformer);
 
         $data = $fractal->createData($collection)->toArray();
-/*
-        print_r($data);
-        die();
-*/
-        return $this->paginatedResponse($resourceRelation,$data);
+
+        return $this->paginatedResponse($resourceRelation, $data);
     }
 
-    public function storeRelationResource($resourceId, $relation, $model = null )
+    public function storeRelationResource($resourceId, $relation, $model = null)
     {
-        if(!$model)
-        {
+        if (!$model) {
             $model = static::RESOURCE_MODEL;
         }
 
         $resource = $model::find($resourceId);
 
-        if( !$resource )
-        {
+        if (!$resource) {
             return $this->notFoundResponse();
         }
 
         $this->validateAction($resource, 'store_'.$relation);
 
-        $resourceData = $this->createResource( $relation, ['post_id' => $resourceId] );
+        $resourceData = $this->createResource($relation, ['post_id' => $resourceId]);
 
-        if( $pos = strrpos($relation, '\\') )
-        {
+        if ($pos = strrpos($relation, '\\')) {
             $relation = substr($relation, $pos + 1);
         }
 
-        return $this->setStatusCode(200)->createdResponse([
+        return $this->setStatusCode(200)->createdResponse(
+            [
             'meta' => [
                 'message' => $relation.' created with ID: ' . $resourceData['id']
             ],
             'data' => $resourceData
-        ]);
+            ]
+        );
     }
 
-    public function updateRelationResource($resourceId, $relation, $relationId, $model = null )
+    public function updateRelationResource($resourceId, $relation, $relationId, $model = null)
     {
         $request = app('request');
-        $model = static::RESOURCE_MODEL;
+        $model   = static::RESOURCE_MODEL;
 
         $resource = $model::find($resourceId);
 
-        if(!$resourceObject = $model::find($resourceId))
-        {
+        if (!$resourceObject = $model::find($resourceId)) {
             return $this->notFoundResponse();
         }
 
@@ -172,13 +164,14 @@ trait ControllerActions
         $relationObject->fill($request->all());
         $relationObject->save();
 
-        return $this->setStatusCode(200)->response([
+        return $this->setStatusCode(200)->response(
+            [
             'meta' => [
                 'message' => 'Updated '.static::RESOURCE_NAME.' with ID: ' . $resourceObject->id
             ],
-            'data' => \App\transform($resourceObject, static::RESOURCE_NAME )
+            'data' => \App\transform($resourceObject, static::RESOURCE_NAME)
             //'data' => $resourceObject->toArray()
-        ]);
+            ]
+        );
     }
-
 }

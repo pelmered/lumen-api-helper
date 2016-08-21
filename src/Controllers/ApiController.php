@@ -14,7 +14,6 @@ use Illuminate\Support\Facades\Gate;
 use pelmered\APIHelper\Traits\ControllerResponses;
 use pelmered\APIHelper\Traits\ControllerActions;
 
-
 abstract class ApiController extends BaseController
 {
     use ControllerResponses, ControllerActions;
@@ -22,22 +21,18 @@ abstract class ApiController extends BaseController
     //const RESOURCE_MODEL = '';
     //const RESOURCE_NAME = '';
 
-    function __construct()
+    public function __construct()
     {
-        //self::MODEL = $this
-
+        parent::__constrct();
     }
 
     protected function getQueryLimit()
     {
         $limit = (int) Input::get('limit') ?: 10;
 
-        /*
-        if( $limit > 50 || $limit == 0 )
-        {
+        if ($limit > 50 || $limit == 0) {
             $limit = 10;
         }
-        */
 
         return $limit;
     }
@@ -46,44 +41,42 @@ abstract class ApiController extends BaseController
     {
         $page = (int) Input::get('page') ?: 1;
 
-        if( $page == 0 )
-        {
+        if ($page == 0) {
             $page = 1;
         }
 
         return $page;
     }
 
-    public function getResource( $resourceId, $checkPermissions = true, $notFoundResponse = true )
+    public function getResource($resourceId, $checkPermissions = true, $notFoundResponse = true)
     {
         $model = static::RESOURCE_MODEL;
 
-        if ($checkPermissions && Gate::denies('read', $model ) ) {
+        if ($checkPermissions && Gate::denies('read', $model)) {
             return $this->permissionDeniedResponse();
         }
 
         $resource = $model::find($resourceId);
 
-        if($notFoundResponse && !$resource) {
+        if ($notFoundResponse && !$resource) {
             return $this->notFoundResponse();
         }
 
         return $resource;
     }
 
-    public function getTransformer( )
+    public function getTransformer()
     {
         $path = '\App\Transformers\\'.static::RESOURCE_NAME.'Transformer';
 
         return new $path;
     }
 
-    function validate( Request $request, array $rules, array $messages = [], array $customAttributes = [] )
+    public function validate(Request $request, array $rules, array $messages = [], array $customAttributes = [])
     {
         $validator = $this->getValidationFactory()->make($request->all(), $rules, $messages, $customAttributes);
 
         if ($validator->fails()) {
-
             $errors = $this->formatValidationErrors($validator);
 
             return $this->setStatusCode(400)
@@ -103,8 +96,7 @@ abstract class ApiController extends BaseController
 
         $errorString = '';
 
-        foreach( $errors AS $field => $error )
-        {
+        foreach ($errors as $field => $error) {
             $errorString .= ucfirst($field).': '.implode(', ', $error).' ';
         }
 
@@ -113,12 +105,4 @@ abstract class ApiController extends BaseController
             'detail'    => $errorString
         ];
     }
-
-
-
-
-
-
 }
-
-

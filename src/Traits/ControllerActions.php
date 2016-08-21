@@ -24,7 +24,7 @@ trait ControllerActions
     }
     */
 
-    public function getCreatedResourceObject( )
+    public function getCreatedResourceObject()
     {
         return $this->resource;
     }
@@ -41,7 +41,7 @@ trait ControllerActions
 
         $model = static::RESOURCE_MODEL;
 
-        if (Gate::denies('read', $model ) ) {
+        if (Gate::denies('read', $model)) {
             return $this->permissionDeniedResponse();
         }
 
@@ -61,7 +61,7 @@ trait ControllerActions
 
         $data = $fractal->createData($collection)->toArray();
 
-        return $this->paginatedResponse($Resources,$data);
+        return $this->paginatedResponse($Resources, $data);
     }
 
 
@@ -70,7 +70,7 @@ trait ControllerActions
     /**
      * Get the specified resource.
      *
-     * @param  int  $id
+     * @param  int $id
      * @return Response
      */
     public function getSingle($Transformer, $resourceId)
@@ -79,13 +79,13 @@ trait ControllerActions
 
         $model = static::RESOURCE_MODEL;
 
-        if (Gate::denies('read', $model ) ) {
+        if (Gate::denies('read', $model)) {
             return $this->permissionDeniedResponse();
         }
 
         $resource = $model::find($resourceId);
 
-        if(!$resource) {
+        if (!$resource) {
             return $this->notFoundResponse();
         }
 
@@ -106,32 +106,32 @@ trait ControllerActions
 
     public function storeResource($model = null)
     {
-        if(!$model)
-        {
+        if (!$model) {
             $model = static::RESOURCE_MODEL;
         }
 
         $this->validateAction($model, 'store');
 
-        $resourceData = $this->createResource( $model );
+        $resourceData = $this->createResource($model);
 
-        return $this->setStatusCode(200)->createdResponse([
+        return $this->setStatusCode(200)->createdResponse(
+            [
             'meta' => [
                 'message' => static::RESOURCE_NAME.' created with ID: ' . $resourceData['id']
             ],
-            'data' => \App\transform($this->getCreatedResourceObject(), static::RESOURCE_NAME )
-        ]);
+            'data' => \App\transform($this->getCreatedResourceObject(), static::RESOURCE_NAME)
+            ]
+        );
     }
 
     protected function createResource($model, $merge = [])
     {
         $request = app('request');
-        $data = $request->all();
+        $data    = $request->all();
 
         // Author should always by current authenticated user
         $author = Auth::user();
-        if( $author )
-        {
+        if ($author) {
             $data['user_id'] = $author->id;
         }
 
@@ -143,12 +143,10 @@ trait ControllerActions
 
         $resourceData = $resourceObject->toArray();
 
-        if(isset($data['media']) && method_exists($this, 'processMedia'))
-        {
+        if (isset($data['media']) && method_exists($this, 'processMedia')) {
             $media = $this->processMedia(isset($merge['post_id']) ? $merge['post_id'] : $resourceObject->id, $model);
 
-            if($media)
-            {
+            if ($media) {
                 $resourceData['media'] = $media;
             }
         }
@@ -159,15 +157,14 @@ trait ControllerActions
     private function processMedia($resource_id)
     {
         $request = app('request');
-        $data = $request->all();
+        $data    = $request->all();
 
-        if( isset($data['media']) )
-        {
+        if (isset($data['media'])) {
             // Author should always by current authenticated user
-            $author = Auth::user();
+            $author                         = Auth::user();
             $data['media']['resource_id']   = $resource_id;
             $data['media']['resource_type'] = static::RESOURCE_NAME;
-            $data['media']['user_id']        = $author->id;
+            $data['media']['user_id']       = $author->id;
 
             $resourceData = $this->saveMedia($data['media']);
 
@@ -176,6 +173,7 @@ trait ControllerActions
 
         return false;
     }
+
     private function saveMedia($mediaData)
     {
         $media = new \pelmered\APIHelper\Models\Media($mediaData);
@@ -184,7 +182,7 @@ trait ControllerActions
 
         $media->setBase64($mediaData['file'])->generateImageSizes();
 
-        $mediaData = $media->toArray();
+        $mediaData              = $media->toArray();
         $mediaData['file_urls'] = $media->getFileUrl();
 
         return $mediaData;
@@ -193,10 +191,9 @@ trait ControllerActions
     public function updateResource($resourceId)
     {
         $request = app('request');
-        $model = static::RESOURCE_MODEL;
+        $model   = static::RESOURCE_MODEL;
 
-        if(!$resourceObject = $model::find($resourceId))
-        {
+        if (!$resourceObject = $model::find($resourceId)) {
             return $this->notFoundResponse();
         }
 
@@ -204,15 +201,12 @@ trait ControllerActions
             return $this->permissionDeniedResponse();
         }
 
-        try
-        {
+        try {
             $validator = \Validator::make($request->all(), $this->getValidationRules('update'));
-            if($validator->fails())
-            {
+            if ($validator->fails()) {
                 throw new \Exception("ValidationException");
             }
-        }catch(\Exception $ex)
-        {
+        } catch (\Exception $ex) {
             $resourceObject = ['form_validations' => $validator->errors(), 'exception' => $ex->getMessage()];
             return $this->validationErrorResponse('Validation error', $resourceObject);
         }
@@ -220,20 +214,21 @@ trait ControllerActions
         $resourceObject->fill($request->all());
         $resourceObject->save();
 
-        return $this->setStatusCode(200)->response([
+        return $this->setStatusCode(200)->response(
+            [
             'meta' => [
                 'message' => 'Updated '.static::RESOURCE_NAME.' with ID: ' . $resourceObject->id
             ],
-            'data' => \App\transform($resourceObject, static::RESOURCE_NAME )
+            'data' => \App\transform($resourceObject, static::RESOURCE_NAME)
             //'data' => $resourceObject->toArray()
-        ]);
+            ]
+        );
     }
 
     public function destroyResource($resourceId)
     {
         $model = static::RESOURCE_MODEL;
-        if(!$resourceObject = $model::find($resourceId))
-        {
+        if (!$resourceObject = $model::find($resourceId)) {
             return $this->notFoundResponse();
         }
 
@@ -243,51 +238,45 @@ trait ControllerActions
 
         $resourceObject->delete();
 
-        return $this->setStatusCode(200)->response([
+        return $this->setStatusCode(200)->response(
+            [
             'meta' => [
                 'message' => 'Deleted '.static::RESOURCE_NAME.' with ID: ' . $resourceObject->id
             ],
             'data' => $resourceObject->toArray()
-        ]);
+            ]
+        );
     }
 
-    public function validateAction( $model, $action )
+    public function validateAction($model, $action)
     {
         $request = app('request');
 
-        if( is_string($model))
-        {
+        if (is_string($model)) {
             $model = new $model();
         }
 
-        if (Gate::denies($action, $model ) ) {
+        if (Gate::denies($action, $model)) {
             return $this->permissionDeniedResponse();
         }
 
-        try
-        {
+        try {
             $validator = \Validator::make($request->all(), $this->getValidationRules($action));
-            if($validator->fails())
-            {
+            if ($validator->fails()) {
                 throw new \Exception("ValidationException");
             }
-
-        }catch(\Exception $ex)
-        {
+        } catch (\Exception $ex) {
             $resourceObject = ['form_validations' => $validator->errors(), 'exception' => $ex->getMessage()];
             return $this->validationErrorResponse('Validation error', $resourceObject);
         }
     }
 
-    function getValidationRules( $type )
+    function getValidationRules($type)
     {
-
-        if( isset( $this->validationRules[$type] ) )
-        {
+        if (isset($this->validationRules[$type])) {
             return $this->validationRules[$type];
         }
 
         return [];
     }
-
 }

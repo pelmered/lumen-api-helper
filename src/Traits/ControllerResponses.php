@@ -6,8 +6,8 @@ use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 
 trait ControllerResponses
 {
-    protected $statusCode = 200;
-    protected $errorCode = '';
+    protected $statusCode   = 200;
+    protected $errorCode    = '';
     protected $errorDetails = '';
 
 
@@ -30,9 +30,11 @@ trait ControllerResponses
 
     public function getErrorCode()
     {
-        if( empty( $this->errorCode ) )
-        {
-            \Log::error( 'Unspecified error(should be specified): ' . "\n" . print_r( debug_backtrace(), true ) );
+        if (empty($this->errorCode)) {
+            \Log::error(
+                'Unspecified error(should be specified): ' . "\n" .
+                print_r(debug_backtrace(), true)
+            );
             return 'UNSPECIFIED_ERROR';
         }
         return $this->errorCode;
@@ -83,7 +85,7 @@ trait ControllerResponses
     protected function validationErrorResponse(
         $message = 'Validation error',
         //$errorDetails = 'Current user does not have permission to access or modify this resource',
-        $data = array()
+        $data = [];
     )
     {
         return $this->setStatusCode(401)
@@ -98,25 +100,28 @@ trait ControllerResponses
         $errorDetails = 'The specified resource could not be found.'
     )
     {
-        if( $message == '' )
-        {
+        if ($message == '') {
             $message = static::RESOURCE_NAME . ' not found';
         }
 
         return $this->setStatusCode(404)
             ->setErrorCode('NOT_FOUND_ERROR')
             ->setErrorDetails($errorDetails)
-            ->errorResponse( $message );
+            ->errorResponse($message);
     }
     function internalErrorResponse(
         $message = 'Internal Error',
-        $errorDetails = 'We are sorry, an internal error was encountered on our servers while processing this request. It might be a temporary hiccup so please try again later. If the error persists please contact us with details about your request.'
+        $errorDetails =
+        'We are sorry, an internal error was encountered on our servers while processing this request. ' .
+        'It might be a temporary hiccup so please try again later. ' .
+        'If the error persists please contact us with details about your request.'
     )
     {
+
         return $this->setStatusCode(500)
             ->setErrorCode('INTERNAL_ERROR')
             ->setErrorDetails($errorDetails)
-            ->errorResponse( $message );
+            ->errorResponse($message);
     }
     function debugErrorResponse($exception)
     {
@@ -135,23 +140,25 @@ trait ControllerResponses
 
         $headers['Access-Control-Allow-Origin'] = 'http://foodie.dev';
 
-        return response()->json( $data, $this->getStatusCode(), $headers, JSON_PRETTY_PRINT );
+        return response()->json($data, $this->getStatusCode(), $headers, JSON_PRETTY_PRINT);
     }
-    function notImplementedResponse($message = 'Planned feature, but not implemented yet. ' )
+    function notImplementedResponse($message = 'Planned feature, but not implemented yet. ')
     {
-        return $this->setStatusCode(501)->setErrorCode('NOT_IMPLEMENTED_ERROR')->errorResponse( $message );
+        return $this->setStatusCode(501)
+                    ->setErrorCode('NOT_IMPLEMENTED_ERROR')
+                    ->errorResponse($message);
     }
 
-    function createdResponse($data = ['message' => ''] )
+    function createdResponse($data = ['message' => ''])
     {
-        return $this->setStatusCode(201)->response( $data );
+        return $this->setStatusCode(201)->response($data);
     }
 
-    function errorResponse($message )
+    function errorResponse($message)
     {
         return $this->response([
             'status'    => 'error',
-            'errors'     => [
+            'errors'    => [
                 'code'      => $this->getErrorCode(),
                 'status'    => $this->getStatusCode(),
                 'title'     => $message,
@@ -160,7 +167,7 @@ trait ControllerResponses
         ]);
     }
 
-    function pngResponse($data )
+    function pngResponse($data)
     {
         $headers = [
             /*
@@ -174,52 +181,54 @@ trait ControllerResponses
             'Content-type' => 'image/png'
         ];
 
-        return response()->download( $data, 'banner.png', $headers );
+        return response()->download($data, 'banner.png', $headers);
     }
 
-    function response($data, $headers = [] )
+    function response($data, $headers = [])
     {
-        if( !isset($data['status'] ) )
-        {
+        if (!isset($data['status'])) {
             $data = ['status' => 'ok'] + $data;
         }
 
         $headers['Access-Control-Allow-Origin'] = 'http://foodie.dev';
 
-        return response()->json( $data, $this->getStatusCode(), $headers );
+        return response()->json($data, $this->getStatusCode(), $headers);
     }
 
-    function paginatedResponse(LengthAwarePaginator $paginator, $data, $headers = [] )
+    function paginatedResponse(LengthAwarePaginator $paginator, $data, $headers = [])
     {
         $currentPage = $this->getCurrentPage();
-        $limit = $this->getQueryLimit();
+        $limit       = $this->getQueryLimit();
 
-        if( empty($data) || $currentPage > ceil( $paginator->total() / $paginator->perPage() ) || $currentPage < 0 )
-        {
+        if (
+            empty($data)
+            || $currentPage > ceil($paginator->total() / $paginator->perPage())
+            || $currentPage < 0
+        ) {
             $this->setStatusCode(404);
         }
 
         $limitStr = '';
 
-        if( $limit )
-        {
+        if ($limit) {
             $limitStr = '&limit='.$limit;
         }
 
-        $data = array_merge( $data, [
-            'pagination' => [
-                'total_count'   => (int) $paginator->total(),
-                'total_pages'   => (int) ceil( $paginator->total() / $paginator->perPage() ),
-                'current_page'  => (int) $currentPage,
-                'limit'         => (int) $paginator->perPage(),
+        $data = array_merge(
+            $data,
+            [
+                'pagination' => [
+                    'total_count'   => (int) $paginator->total(),
+                    'total_pages'   => (int) ceil($paginator->total() / $paginator->perPage()),
+                    'current_page'  => (int) $currentPage,
+                    'limit'         => (int) $paginator->perPage(),
 
-                'prev_link'     => $paginator->previousPageUrl().$limitStr,
-                'next_link'     => $paginator->nextPageUrl().$limitStr
+                    'prev_link'     => $paginator->previousPageUrl().$limitStr,
+                    'next_link'     => $paginator->nextPageUrl().$limitStr
+                ]
             ]
-        ]);
+        );
 
-        return $this->response( $data, $headers );
+        return $this->response($data, $headers);
     }
-
-
 }
