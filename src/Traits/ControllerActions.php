@@ -73,7 +73,7 @@ trait ControllerActions
      * @param  int $id
      * @return Response
      */
-    public function getSingle($Transformer, $resourceId)
+    public function getSingle($transformer, $resourceId)
     {
         $fractal = new Manager();
 
@@ -97,7 +97,7 @@ trait ControllerActions
             $fractal->parseIncludes($include);
         }
 
-        $item = new Item($resource, $Transformer);
+        $item = new Item($resource, $transformer);
 
         $data = $fractal->createData($item)->toArray();
 
@@ -154,7 +154,7 @@ trait ControllerActions
         return $resourceData;
     }
 
-    private function processMedia($resource_id)
+    private function processMedia($resourceId)
     {
         $request = app('request');
         $data    = $request->all();
@@ -162,7 +162,7 @@ trait ControllerActions
         if (isset($data['media'])) {
             // Author should always by current authenticated user
             $author                         = Auth::user();
-            $data['media']['resource_id']   = $resource_id;
+            $data['media']['resource_id']   = $resourceId;
             $data['media']['resource_type'] = static::RESOURCE_NAME;
             $data['media']['user_id']       = $author->id;
 
