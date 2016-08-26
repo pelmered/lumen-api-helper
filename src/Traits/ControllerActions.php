@@ -45,6 +45,7 @@ trait ControllerActions
             return $this->permissionDeniedResponse();
         }
 
+
         $include = filter_input(INPUT_GET, 'include', FILTER_SANITIZE_STRING);
 
         if (isset($include)) {

@@ -23,7 +23,7 @@ abstract class ApiController extends BaseController
 
     public function __construct()
     {
-        parent::__constrct();
+        //parent::__construct();
     }
 
     protected function getQueryLimit()

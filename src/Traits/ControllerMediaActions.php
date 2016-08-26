@@ -17,7 +17,7 @@ trait ControllerMediaActions
     protected $resource = null;
 
 
-    private function processMedia($resourceId)
+    public function processMedia($resourceId)
     {
         $request = app('request');
         $data    = $request->all();
