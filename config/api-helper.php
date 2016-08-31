@@ -8,8 +8,9 @@ return [
     | Title
     |--------------------------------------------------------------------------
     |
-    | Description
+    | Access-Control-Allow-Origin
     |
     */
+    'Access-Control-Allow-Origin'   => '*'
 
 ];

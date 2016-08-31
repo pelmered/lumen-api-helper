@@ -138,7 +138,7 @@ trait ControllerResponses
             ]
         ];
 
-        $headers['Access-Control-Allow-Origin'] = 'http://foodie.dev';
+        $headers['Access-Control-Allow-Origin'] = $this->getAllowOriginURL();
 
         return response()->json($data, $this->getStatusCode(), $headers, JSON_PRETTY_PRINT);
     }
@@ -190,7 +190,10 @@ trait ControllerResponses
             $data = ['status' => 'ok'] + $data;
         }
 
-        $headers['Access-Control-Allow-Origin'] = 'http://foodie.dev';
+        //$headers['Access-Control-Allow-Origin'] = $this->getAllowOriginURL();
+        $headers['Access-Control-Allow-Origin'] = '*';
+        $headers['Access-Control-Allow-Methods'] = 'POST, GET, OPTIONS, PUT, DELETE, PATCH';
+        $headers['Access-Control-Allow-Headers'] = 'Content-Type, X-Auth-Token, Origin, Authorization, Token';
 
         return response()->json($data, $this->getStatusCode(), $headers);
     }
@@ -231,4 +234,12 @@ trait ControllerResponses
 
         return $this->response($data, $headers);
     }
+
+    private function getAllowOriginURL()
+    {
+        $config = config('api-helper');
+
+        return $config['AllowOriginURL'];
+    }
+
 }

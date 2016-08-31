@@ -17,6 +17,14 @@ class APIHelperServiceProvider extends ServiceProvider
     public function register()
     {
         $this->app->configure(self::CONFIG_KEY);
+
+        $request = $this->app->make('request');
+
+        if($request->isMethod('OPTIONS')) {
+            $this->app->options($request->path(), function() {
+                return response('OK', 200);
+            });
+        }
     }
 
     /*
