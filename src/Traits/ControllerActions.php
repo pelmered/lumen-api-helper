@@ -35,7 +35,7 @@ trait ControllerActions
      *
      * @return Response
      */
-    public function getList($transformer)
+    public function getList($transformer, $filters = [])
     {
         $fractal = new Manager();
 
@@ -56,7 +56,18 @@ trait ControllerActions
 
         $limit = $this->getQueryLimit();
 
-        $Resources = $model::orderBy('created_at', 'desc')->paginate($limit);
+
+        $res = $model::orderBy('created_at', 'desc');
+
+        if(!empty($filters))
+        {
+            foreach($filters as $filter)
+            {
+                $res = $res->where($filter['field'], $filter['operator'], $filter['value']);
+            }
+        }
+
+        $Resources = $res->paginate($limit);
 
         $collection = new Collection($Resources, $transformer);
 
