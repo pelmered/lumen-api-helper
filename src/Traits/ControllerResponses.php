@@ -76,7 +76,7 @@ trait ControllerResponses
         $errorDetails = 'Current user does not have permission to access or modify this resource'
     )
     {
-        return $this->setStatusCode(401)
+        return $this->setStatusCode(403)
             ->setErrorCode('PERMISSION_DENIED_ERROR')
             ->setErrorDetails($errorDetails)
             ->errorResponse($message);
@@ -88,7 +88,7 @@ trait ControllerResponses
         $data = []
     )
     {
-        return $this->setStatusCode(401)
+        return $this->setStatusCode(400)
             ->setErrorCode('VALIDATION_ERROR')
             ->setErrorDetails($data)
             ->errorResponse($message);
