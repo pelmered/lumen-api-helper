@@ -45,7 +45,6 @@ trait ControllerActions
             return $this->permissionDeniedResponse();
         }
 
-
         $include = filter_input(INPUT_GET, 'include', FILTER_SANITIZE_STRING);
 
         if (isset($include)) {
@@ -56,24 +55,39 @@ trait ControllerActions
 
         $limit = $this->getQueryLimit();
 
-
-        $res = $model::orderBy('created_at', 'desc');
-
-        if(!empty($filters))
-        {
-            foreach($filters as $filter)
-            {
-                $res = $res->where($filter['field'], $filter['operator'], $filter['value']);
-            }
-        }
-
-        $Resources = $res->paginate($limit);
+        $query = $model::orderBy('created_at', 'desc');
+        $query = $this->processFilters($query, $filters);
+        $Resources = $query->paginate($limit);
 
         $collection = new Collection($Resources, $transformer);
 
         $data = $fractal->createData($collection)->toArray();
 
         return $this->paginatedResponse($Resources, $data);
+    }
+
+    private function processFilters($query, $filters)
+    {
+        if(!empty($filters))
+        {
+            foreach($filters as $filter)
+            {
+                if(strpos($filter['field'], '.'))
+                {
+                    $fields = explode('.', $filter['field']);
+
+                    $query->whereHas($fields[0], function ($query) use($fields, $filter) {
+                        $query->where($fields[1], $filter['operator'], $filter['value']);
+                    });
+                }
+                else
+                {
+                    $query = $query->where($filter['field'], $filter['operator'], $filter['value']);
+                }
+            }
+        }
+
+        return $query;
     }
 
 
