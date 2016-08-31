@@ -167,21 +167,18 @@ trait ControllerResponses
         ]);
     }
 
-    function pngResponse($data)
+    function imageResponse($data, $fileName, $imageType = 'png', $headers = [])
     {
-        $headers = [
-            /*
-        'Pragma' => 'public',
-        'Expires' => '0',
-        'Cache-Control' => 'must-revalidate, post-check=0, pre-check=0',
-        'Cache-Control' => 'private',
-        'Content-Disposition' => 'attachment filename="$filename.csv";',
-        'Content-Transfer-Encoding' => 'binary',
-        */
-            'Content-type' => 'image/png'
-        ];
+        if($imageType == 'jpg')
+        {
+            $headers['Content-type'] = 'image/jpg';
+        }
+        else
+        {
+            $headers['Content-type'] = 'image/png';
+        }
 
-        return response()->download($data, 'banner.png', $headers);
+        return response()->download($data, $fileName, $headers);
     }
 
     function response($data, $headers = [])
