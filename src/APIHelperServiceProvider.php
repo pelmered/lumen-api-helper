@@ -20,7 +20,7 @@ class APIHelperServiceProvider extends ServiceProvider
 
         $request = $this->app->make('request');
 
-        if($request->isMethod('OPTIONS')) {
+        if ($request->isMethod('OPTIONS')) {
             $this->app->options($request->path(), function() {
                 return response('OK', 200);
             });

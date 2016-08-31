@@ -40,7 +40,7 @@ class CreateMediaTable extends Migration
         Schema::drop('media');
     }
 
-    function removeAllMedaFiles()
+    protected function removeAllMedaFiles()
     {
         $mediaDir = app()->basePath('public/media/');
         $dir = new DirectoryIterator( $mediaDir );

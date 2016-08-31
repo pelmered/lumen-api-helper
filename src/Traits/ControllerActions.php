@@ -57,22 +57,22 @@ trait ControllerActions
 
         $query = $model::orderBy('created_at', 'desc');
         $query = $this->processFilters($query, $filters);
-        $Resources = $query->paginate($limit);
+        $resources = $query->paginate($limit);
 
-        $collection = new Collection($Resources, $transformer);
+        $collection = new Collection($resources, $transformer);
 
         $data = $fractal->createData($collection)->toArray();
 
-        return $this->paginatedResponse($Resources, $data);
+        return $this->paginatedResponse($resources, $data);
     }
 
     private function processFilters($query, $filters)
     {
-        if(!empty($filters))
+        if (!empty($filters))
         {
             foreach($filters as $filter)
             {
-                if(strpos($filter['field'], '.'))
+                if (strpos($filter['field'], '.'))
                 {
                     $fields = explode('.', $filter['field']);
 

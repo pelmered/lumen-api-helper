@@ -46,7 +46,7 @@ class Media extends Model
     {
         $this->config = config('media');
 
-        if(!isset($this->config['storagePath']))
+        if (!isset($this->config['storagePath']))
         {
             $this->imageFilePath = app()->basePath('public/media');
         }
@@ -92,7 +92,7 @@ class Media extends Model
     public function fetchLocalFile($uri, $uploadsDir)
     {
         $split = explode('wp-content/uploads', $uri);
-        if(!isset($split[1]))
+        if (!isset($split[1]))
         {
             return $this;
         }
@@ -159,7 +159,7 @@ class Media extends Model
 
     public function getUniqueFileName($fileBaseName, $fileExtension)
     {
-        if(!file_exists($this->imageFilePath.'/'.$fileBaseName.'.'.$fileExtension))
+        if (!file_exists($this->imageFilePath.'/'.$fileBaseName.'.'.$fileExtension))
         {
             return $fileBaseName;
         }
@@ -214,11 +214,13 @@ class Media extends Model
 
         $file = $this->extractFileExtension($this->file);
 
-        foreach ($imageSizes as $imageSizeName => $imageSize) {
+        foreach ($imageSizes as $imageSizeName => $imageSize)
+        {
 
             $fileName = $file['basename'].$imageSize['suffix'].'.'.$file['extension'];
 
-            if(file_exists($this->imageFilePath.'/'.$fileName)){
+            if (file_exists($this->imageFilePath.'/'.$fileName))
+            {
 
                 $files[$imageSizeName] = $actualSizes[$imageSizeName] + [
                     'src' => url('media/'.$fileName)

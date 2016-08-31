@@ -169,7 +169,7 @@ trait ControllerResponses
 
     function imageResponse($data, $fileName, $imageType = 'png', $headers = [])
     {
-        if($imageType == 'jpg')
+        if ($imageType == 'jpg')
         {
             $headers['Content-type'] = 'image/jpg';
         }
