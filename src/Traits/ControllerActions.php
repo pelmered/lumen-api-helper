@@ -41,9 +41,11 @@ trait ControllerActions
 
         $model = static::RESOURCE_MODEL;
 
+        /*
         if (Gate::denies('read', $model)) {
             return $this->permissionDeniedResponse();
         }
+        */
 
         $include = filter_input(INPUT_GET, 'include', FILTER_SANITIZE_STRING);
 
@@ -105,9 +107,11 @@ trait ControllerActions
 
         $model = static::RESOURCE_MODEL;
 
+        /*
         if (Gate::denies('read', $model)) {
             return $this->permissionDeniedResponse();
         }
+        */
 
         $resource = $model::find($resourceId);
 
@@ -223,9 +227,11 @@ trait ControllerActions
             return $this->notFoundResponse();
         }
 
+        /*
         if (Gate::denies('update', $resourceObject)) {
             return $this->permissionDeniedResponse();
         }
+        */
 
         try {
             $validator = \Validator::make($request->all(), $this->getValidationRules('update'));
@@ -258,9 +264,11 @@ trait ControllerActions
             return $this->notFoundResponse();
         }
 
+        /*
         if (Gate::denies('delete', $resourceObject)) {
             return $this->permissionDeniedResponse();
         }
+        */
 
         $resourceObject->delete();
 
@@ -282,9 +290,11 @@ trait ControllerActions
             $model = new $model();
         }
 
+        /*
         if (Gate::denies($action, $model)) {
             return $this->permissionDeniedResponse();
         }
+        */
 
         try {
             $validator = \Validator::make($request->all(), $this->getValidationRules($action));
