@@ -229,7 +229,7 @@ class Media extends Model
             }
             else
             {
-                die($this->imageFilePath.'/'.$fileName);
+                //die($this->imageFilePath.'/'.$fileName);
             }
 
         }
