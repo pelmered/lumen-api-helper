@@ -81,7 +81,21 @@ class Media extends Model
     {
         $localPath = '/tmp/'.basename($uri);
 
-        copy($uri, $localPath);
+        try{
+            copy($uri, $localPath);
+        }
+        catch (\Exception $e)
+        {
+            $uri = str_replace('https://', 'http://', $uri);
+
+            try{
+                copy($uri, $localPath);
+            }
+            catch (\Exception $e)
+            {
+                return  false;
+            }
+        }
 
         $manager = $this->getImageManager();
 
@@ -98,6 +112,11 @@ class Media extends Model
         }
 
         $localPath = $uploadsDir.$split[1];
+
+        if (!file_exists($localPath))
+        {
+            return false;
+        }
 
         $manager = $this->getImageManager();
 
