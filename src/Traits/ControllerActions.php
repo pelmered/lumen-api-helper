@@ -57,10 +57,10 @@ trait ControllerActions
 
         $limit = $this->getQueryLimit();
 
-        $query = $model::orderBy('created_at', 'desc');
-        $query = $this->processSorting($query, $sorting);
-        $query = $this->processFilters($query, $filters);
-        $resources = $query->paginate($limit);
+        $resources = $model::orderBy('created_at', 'desc')
+            ->processSorting($sorting)
+            ->processFilters($filters)
+            ->paginate($limit);
 
         $collection = new Collection($resources, $transformer);
 
@@ -69,58 +69,6 @@ trait ControllerActions
         return $this->paginatedResponse($resources, $data);
     }
 
-
-
-    private function processSorting($query, $sorting)
-    {
-        if (!empty($sorting))
-        {
-            foreach($sorting AS $sort)
-            {
-                if(isset($sort['orderBy']))
-                {
-                    if(!isset($sort['order']) || !in_array($sort['order'], ['asc', 'desc']))
-                    {
-                        $sort['order'] = 'asc';
-                    }
-
-                    /*
-                    print_r($sort);
-                    die();
-                    */
-                    //die($sort['order']);
-                    $query = $query->orderBy($sort['orderBy'], $sort['order']);
-                    //$query = $query->orderBy($sort['orderBy'], $sort['order']);
-                }
-            }
-        }
-
-        return $query;
-    }
-
-    private function processFilters($query, $filters)
-    {
-        if (!empty($filters))
-        {
-            foreach($filters as $filter)
-            {
-                if (strpos($filter['field'], '.'))
-                {
-                    $fields = explode('.', $filter['field']);
-
-                    $query = $query->whereHas($fields[0], function ($query) use($fields, $filter) {
-                        $query->where($fields[1], $filter['operator'], $filter['value']);
-                    });
-                }
-                else
-                {
-                    $query = $query->where($filter['field'], $filter['operator'], $filter['value']);
-                }
-            }
-        }
-
-        return $query;
-    }
 
 
 
