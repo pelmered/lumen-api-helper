@@ -47,5 +47,4 @@ class APIHelperServiceProvider extends ServiceProvider
         ], 'migrations');
     }
 
-
 }

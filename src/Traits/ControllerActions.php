@@ -31,7 +31,6 @@ trait ControllerActions
         return $this->resource;
     }
 
-
     /**
      * Get a listing of the resource.
      *
@@ -43,11 +42,9 @@ trait ControllerActions
 
         $model = static::RESOURCE_MODEL;
 
-        /*
         if (Gate::denies('read', $model)) {
             return $this->permissionDeniedResponse();
         }
-        */
 
         $include = filter_input(INPUT_GET, 'include', FILTER_SANITIZE_STRING);
 
@@ -71,10 +68,6 @@ trait ControllerActions
         return $this->paginatedResponse($resources, $data);
     }
 
-
-
-
-
     /**
      * Get the specified resource.
      *
@@ -87,11 +80,9 @@ trait ControllerActions
 
         $model = static::RESOURCE_MODEL;
 
-        /*
         if (Gate::denies('read', $model)) {
             return $this->permissionDeniedResponse();
         }
-        */
 
         $resource = $model::find($resourceId);
 
@@ -224,6 +215,7 @@ trait ControllerActions
     public function destroyResource($resourceId)
     {
         $model = static::RESOURCE_MODEL;
+
         if (!$resourceObject = $model::find($resourceId)) {
             return $this->notFoundResponse();
         }
