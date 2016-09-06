@@ -2,7 +2,9 @@
 
 namespace pelmered\APIHelper;
 
-class APIHelper
+use Illuminate\Support\Facades\Facade;
+
+class APIHelper extends Facade
 {
 
     public static function getExceptionMessage($exception )

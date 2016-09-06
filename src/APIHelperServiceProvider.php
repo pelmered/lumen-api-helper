@@ -25,6 +25,11 @@ class APIHelperServiceProvider extends ServiceProvider
                 return response('OK', 200);
             });
         }
+
+        $this->app->bind('APIHelper', function()
+        {
+            return new APIHelper;
+        });
     }
 
     /*
