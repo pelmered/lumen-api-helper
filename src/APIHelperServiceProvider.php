@@ -25,6 +25,7 @@ class APIHelperServiceProvider extends ServiceProvider
                 return response('OK', 200);
             });
         }
+
     }
 
     /*
@@ -41,6 +42,5 @@ class APIHelperServiceProvider extends ServiceProvider
             dirname(__DIR__).'/migrations/' => database_path('migrations')
         ], 'migrations');
     }
-
 
 }
