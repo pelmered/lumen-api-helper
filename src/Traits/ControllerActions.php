@@ -2,6 +2,8 @@
 
 namespace pelmered\APIHelper\Traits;
 
+use Illuminate\Support\Facades\DB;
+use pelmered\APIHelper\APIHelper;
 use pelmered\APIHelper\ApiSerializer;
 
 use Illuminate\Support\Facades\Auth;
@@ -54,7 +56,7 @@ trait ControllerActions
 
         $limit = $this->getQueryLimit();
 
-        $resources = $model::orderBy('created_at', 'desc')
+        $resources = $model::orderBy('created_at', 'asc')
             ->processSorting($sorting)
             ->processFilters($filters)
             ->paginate($limit);
@@ -196,34 +198,18 @@ trait ControllerActions
             return $this->notFoundResponse();
         }
 
-        /*
-        if (Gate::denies('update', $resourceObject)) {
-            return $this->permissionDeniedResponse();
-        }
-        */
-
-        try {
-            $validator = \Validator::make($request->all(), $this->getValidationRules('update'));
-            if ($validator->fails()) {
-                throw new \Exception("ValidationException");
-            }
-        } catch (\Exception $ex) {
-            $resourceObject = ['form_validations' => $validator->errors(), 'exception' => $ex->getMessage()];
-            return $this->validationErrorResponse('Validation error', $resourceObject);
-        }
+        $this->validateAction($model, 'update');
 
         $resourceObject->fill($request->all());
         $resourceObject->save();
 
-        return $this->setStatusCode(200)->response(
-            [
+        return $this->setStatusCode(200)->response([
             'meta' => [
                 'message' => 'Updated '.static::RESOURCE_NAME.' with ID: ' . $resourceObject->id
             ],
-            'data' => \App\transform($resourceObject, static::RESOURCE_NAME)
+            'data' => APIHelper::transform($resourceObject, static::RESOURCE_NAME)
             //'data' => $resourceObject->toArray()
-            ]
-        );
+        ]);
     }
 
     public function destroyResource($resourceId)
