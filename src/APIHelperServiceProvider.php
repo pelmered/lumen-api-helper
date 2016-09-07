@@ -4,12 +4,9 @@ namespace pelmered\APIHelper;
 
 use Illuminate\Support\ServiceProvider;
 use AngryCreative\WCImporter\WooCommerceImporter;
-use pelmered\APIHelper\Traits\ControllerResponses;
 
 class APIHelperServiceProvider extends ServiceProvider
 {
-    use ControllerResponses;
-
     //const CONFIG_KEY = 'api-helper';
     const CONFIG_KEY = 'media';
 
@@ -24,8 +21,9 @@ class APIHelperServiceProvider extends ServiceProvider
         $request = $this->app->make('request');
 
         if ($request->isMethod('OPTIONS')) {
-            $this->app->options($request->path(), function() {
-                return $this->setStatusCode(200)->response(['status' => 'ok']);
+
+            $this->app->options($request->path(), function(){
+                return response()->json(['status' => 'ok'], 200, APIHelper::getAccessControlheaders());
             });
         }
 
