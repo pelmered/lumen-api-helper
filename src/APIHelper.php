@@ -4,6 +4,16 @@ namespace pelmered\APIHelper;
 
 class APIHelper
 {
+    public static function getAccessControlheaders()
+    {
+        $config = config('api-helper');
+
+        return [
+            'Access-Control-Allow-Origin'   => $config['AllowOriginURL'],
+            'Access-Control-Allow-Methods'  => 'POST, GET, OPTIONS, PUT, DELETE, PATCH',
+            'Access-Control-Allow-Headers'  => 'Content-Type, X-Auth-Token, Origin, Authorization, Token',
+        ];
+    }
 
     public static function getExceptionMessage($exception )
     {
@@ -16,7 +26,7 @@ class APIHelper
         return $data;
     }
 
-    public static function transform($resource, $resourceType)
+    public static function transform($resource, $resourceType, $includes = [])
     {
         $transformerPath = '\App\Transformers\\'.$resourceType.'Transformer';
         $transformer = new $transformerPath();
@@ -32,7 +42,6 @@ class APIHelper
 
         if(is_array($includes) && !empty($includes))
         {
-
             foreach($includes AS $include)
             {
                 $methodName = 'include'.ucfirst($include);
