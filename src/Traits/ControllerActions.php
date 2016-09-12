@@ -120,7 +120,7 @@ trait ControllerActions
             'meta' => [
                 'message' => static::RESOURCE_NAME.' created with ID: ' . $resourceData['id']
             ],
-            'data' => \App\transform($this->getCreatedResourceObject(), static::RESOURCE_NAME)
+            'data' => APIHelper::transform($this->getCreatedResourceObject(), static::RESOURCE_NAME)
             ]
         );
     }
