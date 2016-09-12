@@ -2,6 +2,7 @@
 
 namespace pelmered\APIHelper\Traits;
 
+use pelmered\APIHelper\APIHelper;
 use pelmered\APIHelper\ApiSerializer;
 
 use Illuminate\Support\Facades\Auth;
@@ -12,7 +13,7 @@ use League\Fractal\Manager;
 use League\Fractal\Resource\Collection;
 use League\Fractal\Resource\Item;
 
-trait ControllerActions
+trait ControllerRelationActions
 {
     protected $resource = null;
 
@@ -167,9 +168,9 @@ trait ControllerActions
         return $this->setStatusCode(200)->response(
             [
             'meta' => [
-                'message' => 'Updated '.static::RESOURCE_NAME.' with ID: ' . $resourceObject->id
+                'message' => 'Updated '.static::RESOURCE_NAME.' with ID: ' . $relationObject->id
             ],
-            'data' => \App\transform($resourceObject, static::RESOURCE_NAME)
+            'data' => APIHelper::transform($relationObject, $relation)
             //'data' => $resourceObject->toArray()
             ]
         );

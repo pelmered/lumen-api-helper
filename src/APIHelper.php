@@ -11,9 +11,10 @@ class APIHelper extends Facade
         $config = config('api-helper');
 
         return [
-            'Access-Control-Allow-Origin'   => $config['AllowOriginURL'],
-            'Access-Control-Allow-Methods'  => 'POST, GET, OPTIONS, PUT, DELETE, PATCH',
-            'Access-Control-Allow-Headers'  => 'Content-Type, X-Auth-Token, Origin, Authorization, Token',
+            //'Access-Control-Allow-Origin'   => $config['AllowOriginURL'],
+            'Access-Control-Allow-Origin'   => '*',
+            'Access-Control-Allow-Methods'  => 'POST, GET, OPTIONS, PUT, PATCH, DELETE',
+            'Access-Control-Allow-Headers'  => 'Content-Type, X-Auth-Token, Origin, Authorization, Token, Accept',
         ];
     }
 
@@ -28,10 +29,22 @@ class APIHelper extends Facade
         return $data;
     }
 
-    public static function transform($resource, $resourceType, $includes = [])
+    private static function getTransformer($resourceType)
     {
         $transformerPath = '\App\Transformers\\'.$resourceType.'Transformer';
-        $transformer = new $transformerPath();
+        return new $transformerPath();
+    }
+
+    public static function transformCollection($resource, $resourceType, $includes = [])
+    {
+        $transformer = static::getTransformer($resourceType);
+
+        return $transformer->transformCollection($resource);
+    }
+
+    public static function transform($resource, $resourceType, $includes = [])
+    {
+        $transformer = static::getTransformer($resourceType);
 
         if(!isset($_GET['include']))
         {

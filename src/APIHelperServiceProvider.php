@@ -22,8 +22,8 @@ class APIHelperServiceProvider extends ServiceProvider
 
         if ($request->isMethod('OPTIONS')) {
 
-            $this->app->options($request->path(), function(){
-                return response()->json(['status' => 'ok'], 200, APIHelper::getAccessControlheaders());
+            $this->app->options($request->path(), function() {
+                return response()->make('ok', 200, APIHelper::getAccessControlheaders());
             });
         }
 

@@ -30,7 +30,7 @@ abstract class ApiController extends BaseController
     {
         $limit = (int) Input::get('limit') ?: 10;
 
-        if ($limit > 50 || $limit == 0) {
+        if ($limit > 100 || $limit == 0) {
             $limit = 10;
         }
 
