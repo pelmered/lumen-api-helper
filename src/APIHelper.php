@@ -83,6 +83,23 @@ class APIHelper extends Facade
         return array_merge($transformer->transform($resource), $extraData);
     }
 
+    public static function stripNameSpace($path)
+    {
+        if ($pos = strrpos($path, '\\')) {
+            $path = substr($path, $pos + 1);
+        }
+
+        return $path;
+    }
+
+    public static function sanitizeArrayofInts($array)
+    {
+        return filter_var($array, FILTER_VALIDATE_INT, array(
+            'flags'     => FILTER_REQUIRE_ARRAY,
+            'options'   => array('min_range' => 1)
+        ));
+    }
+
     public static function generateRandomString($length = 10) {
         $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
         $charactersLength = strlen($characters);
