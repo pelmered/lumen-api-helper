@@ -1,10 +1,10 @@
 {
-  "name"       : "pelmered/lumen-api-helper",
-  "description": "Collection of traits and base classes for structured and rapid API development",
-  "homepage"   : "https://github.com/pelmered/lumen-api-helper",
+  "name"        : "pelmered/lumen-api-helper",
+  "description" : "Collection of traits and base classes for structured and rapid API development",
+  "homepage"    : "https://github.com/pelmered/lumen-api-helper",
   "keywords"    : ["Lumen","rest","api","controller","trait"],
-  "type"       : "library",
-  "license"    : "MIT",
+  "type"        : "library",
+  "license"     : "MIT",
   "authors"     : [
     {
       "name"    : "Peter Elmered",

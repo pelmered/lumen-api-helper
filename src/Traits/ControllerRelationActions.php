@@ -102,6 +102,48 @@ trait ControllerRelationActions
         return $this->paginatedResponse($resourceRelation, $data);
     }
 
+    public function storeRelationResourceCollection($resourceId, $relation, $key, $model = null)
+    {
+
+        if (!$model) {
+            $model = static::RESOURCE_MODEL;
+        }
+
+        $resource = $model::find($resourceId);
+
+        if (!$resource) {
+            return $this->notFoundResponse();
+        }
+
+        $this->validateAction($resource, 'store_'.$relation);
+
+        $request = app('request');
+        $data    = $request->all();
+
+        if (!isset($data[$key]) || empty($data[$key]))
+        {
+            return $this->validationErrorResponse('Invalid payload', $resource);
+        }
+
+        $relationIds = array_filter($data[$key], function($val) {
+            return is_integer($val) || (is_string($val) && ctype_digit($val));
+        });
+
+        $resource->$relation()->sync($relationIds);
+
+        $relation = APIHelper::stripNameSpace($relation);
+
+        return $this->setStatusCode(200)->createdResponse(
+            [
+                'meta' => [
+                    'message' => ucfirst($relation).' added to '.APIHelper::stripNameSpace(static::RESOURCE_MODEL).' created with IDs: ' . implode(', ', $relationIds)
+                ],
+                'data' => $relationIds
+            ]
+        );
+
+    }
+
     public function storeRelationResource($resourceId, $relation, $model = null)
     {
         if (!$model) {
