@@ -19,8 +19,6 @@ trait ControllerRelationActions
 
     public function getSignleRelation($transformer, $resourceId, $relation, $relationId)
     {
-        $fractal = new Manager();
-
         $model = static::RESOURCE_MODEL;
 
         $resource = $model::find($resourceId);
@@ -33,14 +31,6 @@ trait ControllerRelationActions
             return $this->permissionDeniedResponse();
         }
 
-        $include = filter_input(INPUT_GET, 'include', FILTER_SANITIZE_STRING);
-
-        if (isset($include)) {
-            $fractal->parseIncludes($include);
-        }
-
-        $fractal->setSerializer(new ApiSerializer());
-
         $resourceRelation = $resource->$relation()->find($relationId);
 
         if (!$resourceRelation) {
@@ -49,7 +39,7 @@ trait ControllerRelationActions
 
         $item = new Item($resourceRelation, $transformer);
 
-        $data = $fractal->createData($item)->toArray();
+        $data = $this->fractal->createData($item)->toArray();
 
         return $this->response($data);
     }
@@ -61,8 +51,6 @@ trait ControllerRelationActions
      */
     public function getRelationList($transformer, $resourceId, $relation)
     {
-        $fractal = new Manager();
-
         $model = static::RESOURCE_MODEL;
 
         $resource = $model::find($resourceId);
@@ -75,12 +63,6 @@ trait ControllerRelationActions
             return $this->permissionDeniedResponse();
         }
 
-        $include = filter_input(INPUT_GET, 'include', FILTER_SANITIZE_STRING);
-
-        if (isset($include)) {
-            $fractal->parseIncludes($include);
-        }
-
         /*
          * TODO: find a solution for excluding parent resource from includes
         if( isset($fractal->includeParams[$relation]) )
@@ -89,22 +71,19 @@ trait ControllerRelationActions
         }
         */
 
-        $fractal->setSerializer(new ApiSerializer());
-
         $limit = $this->getQueryLimit();
 
         $resourceRelation = $resource->$relation()->paginate($limit);
 
         $collection = new Collection($resourceRelation, $transformer);
 
-        $data = $fractal->createData($collection)->toArray();
+        $data = $this->fractal->createData($collection)->toArray();
 
         return $this->paginatedResponse($resourceRelation, $data);
     }
 
     public function storeRelationResourceCollection($resourceId, $relation, $key, $model = null)
     {
-
         if (!$model) {
             $model = static::RESOURCE_MODEL;
         }

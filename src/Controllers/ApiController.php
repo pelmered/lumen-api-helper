@@ -11,18 +11,35 @@ use Illuminate\Validation\Validator;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Gate;
 
+use League\Fractal\Manager;
+
 use pelmered\APIHelper\Traits\ControllerResponses;
 use pelmered\APIHelper\Traits\ControllerActions;
+use pelmered\APIHelper\Traits\ControllerRelationActions;
+
+use pelmered\APIHelper\APIHelper;
+use pelmered\APIHelper\ApiSerializer;
 
 abstract class ApiController extends BaseController
 {
-    use ControllerResponses, ControllerActions;
+    use ControllerResponses, ControllerActions, ControllerRelationActions;
 
     //const RESOURCE_MODEL = '';
     //const RESOURCE_NAME = '';
 
+    protected $fractal;
+
     public function __construct()
     {
+        $this->fractal = new Manager();
+        $this->fractal->setSerializer(new ApiSerializer());
+
+        $include = filter_input(INPUT_GET, 'include', FILTER_SANITIZE_STRING);
+
+        if (isset($include)) {
+            $this->fractal->parseIncludes($include);
+        }
+
         //parent::__construct();
     }
 

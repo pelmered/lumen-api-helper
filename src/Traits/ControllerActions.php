@@ -38,21 +38,13 @@ trait ControllerActions
      */
     public function getList($transformer, $sorting = [], $filters = [])
     {
-        $fractal = new Manager();
-
         $model = static::RESOURCE_MODEL;
 
+        /*
         if (Gate::denies('read', $model)) {
             return $this->permissionDeniedResponse();
         }
-
-        $include = filter_input(INPUT_GET, 'include', FILTER_SANITIZE_STRING);
-
-        if (isset($include)) {
-            $fractal->parseIncludes($include);
-        }
-
-        $fractal->setSerializer(new ApiSerializer());
+        */
 
         $limit = $this->getQueryLimit();
 
@@ -63,7 +55,7 @@ trait ControllerActions
 
         $collection = new Collection($resources, $transformer);
 
-        $data = $fractal->createData($collection)->toArray();
+        $data = $this->fractal->createData($collection)->toArray();
 
         return $this->paginatedResponse($resources, $data);
     }
@@ -76,8 +68,6 @@ trait ControllerActions
      */
     public function getSingle($transformer, $resourceId)
     {
-        $fractal = new Manager();
-
         $model = static::RESOURCE_MODEL;
 
         if (Gate::denies('read', $model)) {
@@ -90,17 +80,9 @@ trait ControllerActions
             return $this->notFoundResponse();
         }
 
-        $fractal->setSerializer(new ApiSerializer());
-
-        $include = filter_input(INPUT_GET, 'include', FILTER_SANITIZE_STRING);
-
-        if (isset($include)) {
-            $fractal->parseIncludes($include);
-        }
-
         $item = new Item($resource, $transformer);
 
-        $data = $fractal->createData($item)->toArray();
+        $data = $this->fractal->createData($item)->toArray();
 
         return $this->response($data);
     }
