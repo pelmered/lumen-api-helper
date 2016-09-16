@@ -110,6 +110,29 @@ class APIHelper extends Facade
         return $randomString;
     }
 
+
+    public static function getUniqueFileName($fileName, $fileSavePath)
+    {
+        if (!file_exists($fileSavePath.'/'.$fileName))
+        {
+            return $fileName;
+        }
+
+        $fileParts = pathinfo($fileName);
+        $fileExtension = $fileParts['extension'];
+        $fileBaseName = $fileParts['filename'];
+
+        $iterator = 1;
+
+        $fileName = $fileBaseName.'_'.$iterator.'.'.$fileExtension;
+
+        while (file_exists($fileSavePath.'/'.$fileName)) {
+            $fileName = $fileBaseName.'_'.++$iterator.'.'.$fileExtension;
+        }
+
+        return $fileBaseName.'_'.++$iterator.'.'.$fileExtension;
+    }
+
 }
 
 
