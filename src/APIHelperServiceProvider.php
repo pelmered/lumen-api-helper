@@ -20,11 +20,18 @@ class APIHelperServiceProvider extends ServiceProvider
 
         $request = $this->app->make('request');
 
+        /*
         if ($request->isMethod('OPTIONS')) {
 
             $this->app->options($request->path(), function() {
                 return response()->make('ok', 200, APIHelper::getAccessControlheaders());
             });
+        }
+        */
+
+        if ($request->isMethod('POST')) {
+
+            header("Access-Control-Allow-Origin: *");
         }
 
         $this->app->bind('APIHelper', function()
