@@ -48,8 +48,7 @@ trait ControllerActions
 
         $limit = $this->getQueryLimit();
 
-        $resources = $model::orderBy('created_at', 'asc')
-            ->processSorting($sorting)
+        $resources = $model::processSorting($sorting)
             ->processFilters($filters)
             ->paginate($limit);
 
