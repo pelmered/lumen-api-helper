@@ -48,15 +48,23 @@ trait ControllerActions
 
         $limit = $this->getQueryLimit();
 
-        $resources = $model::processSorting($sorting)
-            ->processFilters($filters)
-            ->paginate($limit);
+        $query = $model::processSorting($sorting)
+            ->processFilters($filters);
 
-        $collection = new Collection($resources, $transformer);
-
-        $data = $this->fractal->createData($collection)->toArray();
-
-        return $this->paginatedResponse($resources, $data);
+        if($limit)
+        {
+            $resources = $query->paginate($limit);
+            $collection = new Collection($resources, $transformer);
+            $data = $this->fractal->createData($collection)->toArray();
+            return $this->paginatedResponse($resources, $data);
+        }
+        else
+        {
+            $resources = $query->get();
+            $collection = new Collection($resources, $transformer);
+            $data = $this->fractal->createData($collection)->toArray();
+            return $this->allResponse($data);
+        }
     }
 
     /**

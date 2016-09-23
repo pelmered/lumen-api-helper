@@ -193,6 +193,8 @@ trait ControllerResponses
         return response()->json($data, $this->getStatusCode(), $headers);
     }
 
+
+
     function paginatedResponse(LengthAwarePaginator $paginator, $data, $headers = [])
     {
         $currentPage = $this->getCurrentPage();
@@ -223,6 +225,25 @@ trait ControllerResponses
 
                     'prev_link'     => $paginator->previousPageUrl().$limitStr,
                     'next_link'     => $paginator->nextPageUrl().$limitStr
+                ]
+            ]
+        );
+
+        return $this->response($data, $headers);
+    }
+
+    function allResponse($data, $headers = [])
+    {
+        $currentPage = $this->getCurrentPage();
+        $limit       = $this->getQueryLimit();
+        $model = static::RESOURCE_MODEL;
+
+
+        $data = array_merge(
+            $data,
+            [
+                'pagination' => [
+                    'total' => $model::count()
                 ]
             ]
         );

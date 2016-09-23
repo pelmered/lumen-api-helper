@@ -45,7 +45,14 @@ abstract class ApiController extends BaseController
 
     protected function getQueryLimit()
     {
-        $limit = (int) Input::get('limit') ?: 10;
+        $limit = Input::get('limit') ?: 10;
+
+        if ($limit === 'all')
+        {
+            return null;
+        }
+
+        $limit = (int) $limit;
 
         if ($limit > 100 || $limit == 0) {
             $limit = 10;
