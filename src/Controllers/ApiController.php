@@ -43,6 +43,29 @@ abstract class ApiController extends BaseController
         //parent::__construct();
     }
 
+    public static function getReservedKeywords(  )
+    {
+        return [
+            'limit',  'page', 'per_page'
+        ];
+    }
+
+    public function columnsFilter( $filters = [] )
+    {
+        $filterFields =array_diff_key($_GET, array_flip(static::getReservedKeywords()));
+
+        foreach($filterFields as $fieldKey => $fieldValue)
+        {
+            $filters[] = [
+                'field'     => $fieldKey,
+                'operator'  => '=',
+                'value'     => filter_var($fieldValue, FILTER_SANITIZE_STRING)
+            ];
+        }
+
+        return $filters;
+    }
+
     protected function getQueryLimit()
     {
         $limit = Input::get('limit') ?: 10;
