@@ -17,7 +17,7 @@ trait ControllerRelationActions
 {
     protected $resource = null;
 
-    public function getSignleRelation($transformer, $resourceId, $relation, $relationId)
+    public function getSingleRelation($transformer, $resourceId, $relation, $relationId)
     {
         $model = static::RESOURCE_MODEL;
 
