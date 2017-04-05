@@ -42,7 +42,7 @@ trait APIModel
                 $fields = explode('.', $filter['field']);
 
                 $query->whereHas($fields[0], function ($query) use($fields, $filter) {
-                    $query->where('custom_meta.'.$fields[1], $filter['operator'], $filter['value']);
+                    $query->where($fields[0].'.'.$fields[1], $filter['operator'], $filter['value']);
                 });
             }
             else
