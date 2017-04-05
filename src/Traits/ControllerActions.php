@@ -77,9 +77,11 @@ trait ControllerActions
     {
         $model = static::RESOURCE_MODEL;
 
+        /*
         if (Gate::denies('read', $model)) {
             return $this->permissionDeniedResponse();
         }
+        */
 
         $resource = $model::find($resourceId);
 
