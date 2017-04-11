@@ -6,25 +6,12 @@ trait APIModel
 {
     public function scopeProcessSorting($query, $sorting)
     {
-        if (empty($sorting))
-        {
+        if (empty($sorting)) {
             $query->orderBy('id', 'desc');
+        } elseif (isset($sorting['orderby']) && isset($sorting['order'])) {
+            $query->orderBy($sorting['orderby'], $sorting['order']);
         }
-        else
-        {
-            foreach($sorting AS $sort)
-            {
-                if(isset($sort['orderBy']))
-                {
-                    if(!isset($sort['order']) || !in_array($sort['order'], ['asc', 'desc']))
-                    {
-                        $sort['order'] = 'asc';
-                    }
 
-                    $query->orderBy($sort['orderBy'], $sort['order']);
-                }
-            }
-        }
         return $query;
     }
 
