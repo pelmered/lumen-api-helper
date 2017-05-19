@@ -96,7 +96,7 @@ trait ControllerActions
         return $this->response($data);
     }
 
-    public function storeResource($model = null)
+    public function storeResource($model = null, $jsonresponse = true)
     {
         if (!$model) {
             $model = static::RESOURCE_MODEL;
@@ -106,14 +106,18 @@ trait ControllerActions
 
         $resourceData = $this->createResource($model);
 
-        return $this->setStatusCode(200)->createdResponse(
-            [
-            'meta' => [
-                'message' => static::RESOURCE_NAME.' created with ID: ' . $resourceData['id']
-            ],
-            'data' => APIHelper::transform($this->getCreatedResourceObject(), static::RESOURCE_NAME)
-            ]
-        );
+        if ($jsonresponse) {
+            return $this->setStatusCode(200)->createdResponse(
+                [
+                    'meta' => [
+                        'message' => static::RESOURCE_NAME.' created with ID: ' . $resourceData['id']
+                    ],
+                    'data' => APIHelper::transform($this->getCreatedResourceObject(), static::RESOURCE_NAME)
+                ]
+            );
+        } else {
+            return $resourceData['id'];
+        }
     }
 
     protected function createResource($model, $merge = [])
