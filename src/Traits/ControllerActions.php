@@ -117,7 +117,7 @@ trait ControllerActions
             );
         } else {
             $resourceData['data'] = APIHelper::transform($this->getCreatedResourceObject(), static::RESOURCE_NAME);
-            return $resourceData['id'];
+            return $resourceData;
         }
     }
 
